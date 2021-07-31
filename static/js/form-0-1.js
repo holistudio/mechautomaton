@@ -117,7 +117,9 @@ function main() {
         const color = 0xFFFFFF;
         const intensity = 1;
         const light = new THREE.DirectionalLight(color, intensity);
-        light.position.set(-1, 2, 4);
+        const helper = new THREE.DirectionalLightHelper( light, 5 );
+        scene.add( helper );
+        light.position.set(-1, 10, 4);
         scene.add(light);
     }
     
@@ -139,6 +141,40 @@ function main() {
 
         return sphere;
     }
+
+    //SURFACES
+    function makePlane(p1,p2,p3,p4) {
+        // const color = 0x42f5a1;
+        const geometry = new THREE.BufferGeometry();
+        // create a simple square shape. We duplicate the top left and bottom right
+        // vertices because each vertex needs to appear once per triangle.
+        const vertices = new Float32Array( [
+            p1.x, p1.y, p1.z,
+            p3.x, p3.y, p3.z,
+            p2.x, p2.y, p2.z,
+
+            p3.x, p3.y, p3.z,
+            p1.x, p1.y, p1.z,
+            p4.x, p4.y, p4.z,
+        ] );
+        // const vertices = new Float32Array( [
+        //     p1.x, p1.y, p1.z,
+        //     p2.x, p2.y, p2.z,
+        //     p3.x, p3.y, p3.z,
+
+        //     p3.x, p3.y, p3.z,
+        //     p4.x, p4.y, p4.z,
+        //     p1.x, p1.y, p1.z,
+        // ] );
+        // itemSize = 3 because there are 3 values (components) per vertex
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        const material = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+        // const material = new THREE.MeshNormalMaterial();
+        const mesh = new THREE.Mesh( geometry, material );
+        scene.add(mesh);
+
+        return mesh;
+    }
     // const pos = {x:0,y:0,z:0};
     // makeSphere(pos);
     
@@ -153,7 +189,7 @@ function main() {
     // scene.add(ball);
 
     
-    //TODO: for each point in formPoints create a sphere
+    //for each point in formPoints create a sphere
     const spheres = [];
     // console.log(form0CurvePoints[0]);
     form0CurvePoints.forEach(function(curve, index, array) {
@@ -164,6 +200,23 @@ function main() {
             // makeSphere(coord);
         });
     });
+
+    const surfaces = [];
+    for (let i = 0; i < form0CurvePoints.length-1; i++) {
+        const curve0 = form0CurvePoints[i];
+        const curve1 = form0CurvePoints[i+1];
+        for (let j = 0; j < curve0.points.length-1; j++) {
+            const p1 = curve0.points[j];
+            const p2 = curve1.points[j];
+            const p3 = curve1.points[j+1];
+            const p4 = curve0.points[j+1];
+
+
+            // console.log(p1);
+            surfaces.push(makePlane(p1,p2,p3,p4));
+        }
+        
+    }
 
 
 
@@ -187,10 +240,11 @@ function main() {
     function render(time) {
         time *= 0.001;  // convert time to seconds
         // console.log(time)
-        timeFraction = time/animationLoopTime;
-        if(timeFraction > 1){
-            timeFraction = 1;
-        }
+        timeFraction = 0;
+        // timeFraction = time/animationLoopTime;
+        // if(timeFraction > 1){
+        //     timeFraction = 1;
+        // }
         // console.log(timeFraction)
 
         // check if renderer resolution needs to change based on canvas/window size
