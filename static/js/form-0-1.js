@@ -141,7 +141,7 @@ function main() {
 
         return sphere;
     }
-
+    // TODO: turn this to makeTriangle!
     //SURFACES
     function makePlane(p1,p2,p3,p4) {
         // const color = 0x42f5a1;
@@ -157,17 +157,18 @@ function main() {
             p1.x, p1.y, p1.z,
             p4.x, p4.y, p4.z,
         ] );
-        // const vertices = new Float32Array( [
-        //     p1.x, p1.y, p1.z,
-        //     p2.x, p2.y, p2.z,
-        //     p3.x, p3.y, p3.z,
 
-        //     p3.x, p3.y, p3.z,
-        //     p4.x, p4.y, p4.z,
+        // TODO: Calculate normal vectors for each triangle vertex
+        // A = [a1, a2, a3] and B = [b1, b2, b3] 
+        // cross(A,B) = [ a2 * b3 - a3 * b2, a3 * b1 - a1 * b3, a1 * b2 - a2 * b1 ]
+        // const normals = new Float32Array( [
         //     p1.x, p1.y, p1.z,
         // ] );
         // itemSize = 3 because there are 3 values (components) per vertex
         geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+
+        // geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+        
         const material = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
         // const material = new THREE.MeshNormalMaterial();
         const mesh = new THREE.Mesh( geometry, material );
@@ -175,6 +176,12 @@ function main() {
 
         return mesh;
     }
+
+    // TODO: Maybe the entire mesh can be one BufferGeometry...and you'll interpolate accordingly...somehow
+    // Reference: https://github.com/mrdoob/three.js/blob/master/examples/webgl_buffergeometry_indexed.html
+    // See how it pushes vertices and normals to a single array before creating the geometry.
+    // Maybe this is slower for interpolation, since you'll need to recalculate all vertices and then reinstantiate an entire geometry for the animation...
+
     // const pos = {x:0,y:0,z:0};
     // makeSphere(pos);
     
