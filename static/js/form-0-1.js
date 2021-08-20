@@ -177,6 +177,48 @@ function main() {
         return mesh;
     }
 
+    function makeFace(p1,p2,p3) {
+        // const color = 0x42f5a1;
+        const geometry = new THREE.BufferGeometry();
+        // create a simple square shape. We duplicate the top left and bottom right
+        // vertices because each vertex needs to appear once per triangle.
+        const vertices = new Float32Array( [
+            p1.x, p1.y, p1.z,
+            p2.x, p2.y, p2.z,
+            p3.x, p3.y, p3.z,
+        ] );
+
+        // TODO: Calculate normal vectors for each triangle vertex
+        // A = [a1, a2, a3] and B = [b1, b2, b3] 
+        const a1 = p3.x - p2.x;
+        const a2 = p3.y - p2.y;
+        const a3 = p3.z - p2.z;
+
+        const b1 = p1.x - p2.x;
+        const b2 = p1.y - p2.y;
+        const b3 = p1.z - p2.z;
+
+        // cross(A,B) = [ a2 * b3 - a3 * b2, a3 * b1 - a1 * b3, a1 * b2 - a2 * b1 ]
+        const crossAB = {x:a2 * b3 - a3 * b2, y:a3 * b1 - a1 * b3, z:a1 * b2 - a2 * b1};
+        
+        const normals = new Float32Array( [
+            crossAB.x, crossAB.y, crossAB.z,
+            crossAB.x, crossAB.y, crossAB.z,
+            crossAB.x, crossAB.y, crossAB.z,
+        ] );
+
+        // itemSize = 3 because there are 3 values (components) per vertex
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+        
+        const material = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+        // const material = new THREE.MeshNormalMaterial();
+        const mesh = new THREE.Mesh( geometry, material );
+        scene.add(mesh);
+
+        return mesh;
+    }
+
     // TODO: Maybe the entire mesh can be one BufferGeometry...and you'll interpolate accordingly...somehow
     // Reference: https://github.com/mrdoob/three.js/blob/master/examples/webgl_buffergeometry_indexed.html
     // See how it pushes vertices and normals to a single array before creating the geometry.
@@ -220,7 +262,8 @@ function main() {
 
 
             // console.log(p1);
-            surfaces.push(makePlane(p1,p2,p3,p4));
+            surfaces.push(makeFace(p1,p3,p2));
+            surfaces.push(makeFace(p3,p1,p4));
         }
         
     }
@@ -346,9 +389,9 @@ function main() {
 
 function setup(){
     form0CurvePoints = loadPoints(form0);
-    console.log(form0CurvePoints);
+    // console.log(form0CurvePoints);
     form1CurvePoints = loadPoints(form1);
-    console.log(form1CurvePoints);
+    // console.log(form1CurvePoints);
     formCurvePoints = form0CurvePoints;
 
     main();
