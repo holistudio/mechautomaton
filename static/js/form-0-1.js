@@ -12,6 +12,10 @@ let timeFraction=0;
 let printOnce = true;
 let p = 0;
 
+let mesh, geometry;
+let vertices = [];
+let normals = [];
+
 
 //TODO: Consider reading csv files using the code below instead
 // TODO: see if this prevents timing issues, as p5 may have cause threejs loops to run faster?
@@ -141,8 +145,11 @@ function main() {
 
         return sphere;
     }
-    // TODO: turn this to makeTriangle!
+
     //SURFACES
+    geometry = new THREE.BufferGeometry();
+    const meshMaterial = new THREE.MeshLambertMaterial( {color: 0x32fcdb, side: THREE.DoubleSide} );
+
     function makePlane(p1,p2,p3,p4) {
         // const color = 0x42f5a1;
         const geometry = new THREE.BufferGeometry();
@@ -179,14 +186,11 @@ function main() {
 
     function makeFace(p1,p2,p3) {
         // const color = 0x42f5a1;
-        const geometry = new THREE.BufferGeometry();
         // create a simple square shape. We duplicate the top left and bottom right
         // vertices because each vertex needs to appear once per triangle.
-        const vertices = new Float32Array( [
-            p1.x, p1.y, p1.z,
-            p2.x, p2.y, p2.z,
-            p3.x, p3.y, p3.z,
-        ] );
+        vertices.push(p1.x, p1.y, p1.z);
+        vertices.push(p2.x, p2.y, p2.z);
+        vertices.push(p3.x, p3.y, p3.z);
 
         // TODO: Calculate normal vectors for each triangle vertex
         // A = [a1, a2, a3] and B = [b1, b2, b3] 
@@ -201,22 +205,9 @@ function main() {
         // cross(A,B) = [ a2 * b3 - a3 * b2, a3 * b1 - a1 * b3, a1 * b2 - a2 * b1 ]
         const crossAB = {x:a2 * b3 - a3 * b2, y:a3 * b1 - a1 * b3, z:a1 * b2 - a2 * b1};
         
-        const normals = new Float32Array( [
-            crossAB.x, crossAB.y, crossAB.z,
-            crossAB.x, crossAB.y, crossAB.z,
-            crossAB.x, crossAB.y, crossAB.z,
-        ] );
-
-        // itemSize = 3 because there are 3 values (components) per vertex
-        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-        geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        
-        const material = new THREE.MeshLambertMaterial( {color: 0x32fcdb, side: THREE.DoubleSide} );
-        // const material = new THREE.MeshNormalMaterial();
-        const mesh = new THREE.Mesh( geometry, material );
-        scene.add(mesh);
-
-        return mesh;
+        normals.push(crossAB.x, crossAB.y, crossAB.z);
+        normals.push(crossAB.x, crossAB.y, crossAB.z);
+        normals.push(crossAB.x, crossAB.y, crossAB.z);
     }
 
     // TODO: Maybe the entire mesh can be one BufferGeometry...and you'll interpolate accordingly...somehow
@@ -250,7 +241,7 @@ function main() {
         });
     });
 
-    const surfaces = [];
+    // const surfaces = [];
     for (let i = 0; i < form0CurvePoints.length-1; i++) {
         const curve0 = form0CurvePoints[i];
         const curve1 = form0CurvePoints[i+1];
@@ -262,12 +253,20 @@ function main() {
 
 
             // console.log(p1);
-            surfaces.push(makeFace(p1,p3,p2));
-            surfaces.push(makeFace(p3,p1,p4));
+            makeFace(p1,p3,p2);
+            makeFace(p3,p1,p4);
         }
         
     }
 
+    // itemSize = 3 because there are 3 values (components) per vertex
+    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+    geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+    
+    
+    // const material = new THREE.MeshNormalMaterial();
+    mesh = new THREE.Mesh( geometry, meshMaterial );
+    scene.add(mesh);
 
 
     //canvas' "external resolution" / size on the webpage is set by CSS
