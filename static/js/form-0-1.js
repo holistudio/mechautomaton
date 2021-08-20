@@ -211,7 +211,7 @@ function main() {
         geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
         geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
         
-        const material = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+        const material = new THREE.MeshLambertMaterial( {color: 0x32fcdb, side: THREE.DoubleSide} );
         // const material = new THREE.MeshNormalMaterial();
         const mesh = new THREE.Mesh( geometry, material );
         scene.add(mesh);
@@ -291,7 +291,7 @@ function main() {
         time *= 0.001;  // convert time to seconds
         // console.log(time)
         timeFraction = 0;
-        // timeFraction = time/animationLoopTime;
+        timeFraction = time/animationLoopTime;
         // if(timeFraction > 1){
         //     timeFraction = 1;
         // }
@@ -352,30 +352,30 @@ function main() {
 
         });
 
-        // for(let i = 0; i<formCurvePoints.length; i++){
-        //     let f1 = form0CurvePoints[i].points;
+        for(let i = 0; i<formCurvePoints.length; i++){
+            let f1 = form0CurvePoints[i].points;
 
-        //     let f2 = form1CurvePoints[i].points;
-        //     for(let j = 0; j<f1.length; j++){
-        //         sphereIndex = f1.length * i + j;
-        //         // console.log(timeFraction);
-        //         // if(timeFraction>=1){
-        //         //     print("Done!");
-        //         // }
-        //         coord = form0CurvePoints[i].points[j];
-        //         coord.x = 1*f1[j].x + timeFraction*(f2[j].x-f1[j].x);
-        //         coord.y = 1*f1[j].y + timeFraction*(f2[j].y-f1[j].y);
-        //         coord.z = 1*f1[j].z + timeFraction*(f2[j].z-f1[j].z);
-        //         // if(i == 0 & j == 0){
-        //         //     print(`${b[j].z-a[j].z}`);
-        //         // }
+            let f2 = form1CurvePoints[i].points;
+            for(let j = 0; j<f1.length; j++){
+                sphereIndex = f1.length * i + j;
+                // console.log(timeFraction);
+                // if(timeFraction>=1){
+                //     print("Done!");
+                // }
+                coord = form0CurvePoints[i].points[j];
+                coord.x = 1*f1[j].x + timeFraction*(f2[j].x-f1[j].x);
+                coord.y = 1*f1[j].y + timeFraction*(f2[j].y-f1[j].y);
+                coord.z = 1*f1[j].z + timeFraction*(f2[j].z-f1[j].z);
+                // if(i == 0 & j == 0){
+                //     print(`${b[j].z-a[j].z}`);
+                // }
                 
-        //         spheres[sphereIndex].position.x = coord.x;
-        //         spheres[sphereIndex].position.y = coord.y;
-        //         spheres[sphereIndex].position.z = coord.z;
+                spheres[sphereIndex].position.x = coord.x;
+                spheres[sphereIndex].position.y = coord.y;
+                spheres[sphereIndex].position.z = coord.z;
 
-        //     }
-        // }
+            }
+        }
 
         //TODO: set sphere positions based on interpolations
 
