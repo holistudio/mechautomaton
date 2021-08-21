@@ -112,11 +112,11 @@ function main() {
     // camera.position.x = 3282;
     // camera.position.y = 2530;
     // camera.position.z = 1125;
-    // camera.position.set(3808, 2007, 1048);
-    // camera.lookAt(1053,-2,-660);
-    // camera.lookAt(0,0,0);
-    camera.position.set(3808, 2007, -1048);
-    camera.lookAt(0,-2,-660);
+    camera.position.set(3808, 2007, 548);
+    camera.lookAt(1053,-2,-660);
+    
+    // camera.position.set(3808, 2007, -1048);
+    // camera.lookAt(0,-2,-660);
 
     //SCENE
     const scene = new THREE.Scene();
@@ -137,13 +137,13 @@ function main() {
         light.shadow.camera.far = 10000; // default
 
         const helper = new THREE.DirectionalLightHelper( light, 5 );
-        scene.add( helper );
+        // scene.add( helper );
 
         const pointLight = new THREE.PointLight(color, intensity, 0 );
         
         pointLight.position.set( 1500, 1000, -3000 );
         const pointLightHelper = new THREE.PointLightHelper( pointLight, 5 );
-        // scene.add( pointLight );
+        scene.add( pointLight );
         // scene.add( pointLightHelper );
     }
     
@@ -421,16 +421,25 @@ function main() {
     // });
 
     // const surfaces = [];
-    for (let i = 0; i < form0CurvePoints.length-1; i++) {
-        const curve0 = form0CurvePoints[i];
-        const curve1 = form0CurvePoints[i+1];
-        for (let j = 0; j < curve0.points.length-1; j++) {
-            const p1 = curve0.points[j];
-            const p2 = curve1.points[j];
-            const p3 = curve1.points[j+1];
-            const p4 = curve0.points[j+1];
-
-
+    for (let i = 0; i < formCurvePoints.length-1; i++) {
+        const curve0 = formCurvePoints[i];
+        const curve1 = formCurvePoints[i+1];
+        
+        for (let j = 0; j < curve0.points.length; j++) {
+            let p1,p2,p3,p4;
+            if(j==curve0.points.length-1){
+                p1 = curve0.points[j];
+                p2 = curve1.points[j];
+                p3 = curve1.points[0];
+                p4 = curve0.points[0];
+            }
+            else{
+                p1 = curve0.points[j];
+                p2 = curve1.points[j];
+                p3 = curve1.points[j+1];
+                p4 = curve0.points[j+1];
+            }
+            
             // console.log(p1);
             // makeFace(p1,p3,p2);
             // makeFace(p3,p1,p4);
@@ -538,11 +547,33 @@ function main() {
         for (let i = 0; i < formCurvePoints.length-1; i++) {
             const curve0 = formCurvePoints[i];
             const curve1 = formCurvePoints[i+1];
-            for (let j = 0; j < curve0.points.length-1; j++) {
-                const p1 = curve0.points[j];
-                const p2 = curve1.points[j];
-                const p3 = curve1.points[j+1];
-                const p4 = curve0.points[j+1];
+            // let curve0, curve1;
+            // if(i==formCurvePoints.length-1){
+            //     curve0 = formCurvePoints[i];
+            //     curve1 = formCurvePoints[0];
+            // }
+            // else{
+            //     curve0 = formCurvePoints[i];
+            //     curve1 = formCurvePoints[i+1];
+            // }
+            for (let j = 0; j < curve0.points.length; j++) {
+                // const p1 = curve0.points[j];
+                // const p2 = curve1.points[j];
+                // const p3 = curve1.points[j+1];
+                // const p4 = curve0.points[j+1];
+                let p1,p2,p3,p4;
+                if(j==curve0.points.length-1){
+                    p1 = curve0.points[j];
+                    p2 = curve1.points[j];
+                    p3 = curve1.points[0];
+                    p4 = curve0.points[0];
+                }
+                else{
+                    p1 = curve0.points[j];
+                    p2 = curve1.points[j];
+                    p3 = curve1.points[j+1];
+                    p4 = curve0.points[j+1];
+                }
                 // console.log(p1);
                 // updateFace(geoIndex,p1,p3,p2);
                 // geoIndex = geoIndex + 3;
