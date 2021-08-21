@@ -93,6 +93,8 @@ function main() {
     //RENDERER
     const canvas = document.querySelector('#c'); //make sure canvas is defined before this script
     const renderer = new THREE.WebGLRenderer({canvas}); //sets renderer's DOM element
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
     renderer.setClearColor(0x8f8f8f);
     
     //TODO: Set camera to perspective matching Rhino
@@ -110,8 +112,11 @@ function main() {
     // camera.position.x = 3282;
     // camera.position.y = 2530;
     // camera.position.z = 1125;
-    camera.position.set(3808, 2007, 1048);
-    camera.lookAt(1053,-2,-660);
+    // camera.position.set(3808, 2007, 1048);
+    // camera.lookAt(1053,-2,-660);
+    // camera.lookAt(0,0,0);
+    camera.position.set(3808, 2007, -1048);
+    camera.lookAt(0,-2,-660);
 
     //SCENE
     const scene = new THREE.Scene();
@@ -121,10 +126,25 @@ function main() {
         const color = 0xFFFFFF;
         const intensity = 1;
         const light = new THREE.DirectionalLight(color, intensity);
+        
+        light.position.set(1000,1000,1000);
+        light.castShadow = true;
+        scene.add(light);
+
+        light.shadow.mapSize.width = 1024; // default
+        light.shadow.mapSize.height = 1024; // default
+        light.shadow.camera.near = 1; // default
+        light.shadow.camera.far = 10000; // default
+
         const helper = new THREE.DirectionalLightHelper( light, 5 );
         scene.add( helper );
-        light.position.set(-1, 10, 4);
-        scene.add(light);
+
+        const pointLight = new THREE.PointLight(color, intensity, 0 );
+        
+        pointLight.position.set( 1500, 1000, -3000 );
+        const pointLightHelper = new THREE.PointLightHelper( pointLight, 5 );
+        // scene.add( pointLight );
+        // scene.add( pointLightHelper );
     }
     
     //POINTS
@@ -426,6 +446,8 @@ function main() {
     
     // const material = new THREE.MeshNormalMaterial();
     mesh = new THREE.Mesh( geometry, meshMaterial );
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     scene.add(mesh);
 
 
