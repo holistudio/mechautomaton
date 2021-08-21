@@ -210,6 +210,56 @@ function main() {
         normals.push(crossAB.x, crossAB.y, crossAB.z);
     }
 
+    function updateFace(i,p1,p2,p3) {
+        const position = geometry.attributes.position;
+        const dir = geometry.attributes.normal;
+        // const color = 0x42f5a1;
+        // create a simple square shape. We duplicate the top left and bottom right
+        // vertices because each vertex needs to appear once per triangle.
+        // vertices[i]=p1.x;
+        // vertices[i+1]=p1.y;
+        // vertices[i+2]=p1.z;
+        // vertices[i+3]=p2.x;
+        // vertices[i+4]=p2.y;
+        // vertices[i+5]=p2.z;
+        // vertices[i+6]=p3.x;
+        // vertices[i+7]=p3.y;
+        // vertices[i+8]=p3.z;
+
+        position.setX(i, p1.x);
+        position.setY(i, p1.y);
+        position.setZ(i, p1.z);
+        position.setX(i+1, p2.x);
+        position.setY(i+1, p2.y);
+        position.setZ(i+1, p2.z);
+        position.setX(i+2, p3.x);
+        position.setY(i+2, p3.y);
+        position.setZ(i+2, p3.z);
+
+        // TODO: Calculate normal vectors for each triangle vertex
+        // A = [a1, a2, a3] and B = [b1, b2, b3] 
+        const a1 = p3.x - p2.x;
+        const a2 = p3.y - p2.y;
+        const a3 = p3.z - p2.z;
+
+        const b1 = p1.x - p2.x;
+        const b2 = p1.y - p2.y;
+        const b3 = p1.z - p2.z;
+
+        // cross(A,B) = [ a2 * b3 - a3 * b2, a3 * b1 - a1 * b3, a1 * b2 - a2 * b1 ]
+        const crossAB = {x:a2 * b3 - a3 * b2, y:a3 * b1 - a1 * b3, z:a1 * b2 - a2 * b1};
+
+        dir.setX(i, crossAB.x);
+        dir.setY(i, crossAB.y);
+        dir.setZ(i, crossAB.z);
+        dir.setX(i+1, crossAB.x);
+        dir.setY(i+1, crossAB.y);
+        dir.setZ(i+1, crossAB.z);
+        dir.setX(i+2, crossAB.x);
+        dir.setY(i+2, crossAB.y);
+        dir.setZ(i+2, crossAB.z);
+    }
+
     // TODO: Maybe the entire mesh can be one BufferGeometry...and you'll interpolate accordingly...somehow
     // Reference: https://github.com/mrdoob/three.js/blob/master/examples/webgl_buffergeometry_indexed.html
     // See how it pushes vertices and normals to a single array before creating the geometry.
@@ -325,6 +375,7 @@ function main() {
             //     }
             // }
             
+            //update curve points interpolating between form0 and form1
             curve.points.forEach(function(coord, k, array) {
                 sphereIndex = f1.length * j + k;
                 // console.log(timeFraction);
@@ -351,30 +402,51 @@ function main() {
 
         });
 
-        for(let i = 0; i<formCurvePoints.length; i++){
-            let f1 = form0CurvePoints[i].points;
-
-            let f2 = form1CurvePoints[i].points;
-            for(let j = 0; j<f1.length; j++){
-                sphereIndex = f1.length * i + j;
-                // console.log(timeFraction);
-                // if(timeFraction>=1){
-                //     print("Done!");
-                // }
-                coord = form0CurvePoints[i].points[j];
-                coord.x = 1*f1[j].x + timeFraction*(f2[j].x-f1[j].x);
-                coord.y = 1*f1[j].y + timeFraction*(f2[j].y-f1[j].y);
-                coord.z = 1*f1[j].z + timeFraction*(f2[j].z-f1[j].z);
-                // if(i == 0 & j == 0){
-                //     print(`${b[j].z-a[j].z}`);
-                // }
-                
-                spheres[sphereIndex].position.x = coord.x;
-                spheres[sphereIndex].position.y = coord.y;
-                spheres[sphereIndex].position.z = coord.z;
-
+        let geoIndex=0;
+        for (let i = 0; i < formCurvePoints.length-1; i++) {
+            const curve0 = formCurvePoints[i];
+            const curve1 = formCurvePoints[i+1];
+            for (let j = 0; j < curve0.points.length-1; j++) {
+                const p1 = curve0.points[j];
+                const p2 = curve1.points[j];
+                const p3 = curve1.points[j+1];
+                const p4 = curve0.points[j+1];
+                // console.log(p1);
+                updateFace(geoIndex,p1,p3,p2);
+                geoIndex = geoIndex + 3;
+                updateFace(geoIndex,p3,p1,p4);
+                geoIndex = geoIndex + 3;
             }
         }
+
+        geometry.attributes.position.needsUpdate = true;
+        geometry.attributes.normal.needsUpdate = true;
+
+
+        // for(let i = 0; i<formCurvePoints.length; i++){
+        //     let f1 = form0CurvePoints[i].points;
+
+        //     let f2 = form1CurvePoints[i].points;
+        //     for(let j = 0; j<f1.length; j++){
+        //         sphereIndex = f1.length * i + j;
+        //         // console.log(timeFraction);
+        //         // if(timeFraction>=1){
+        //         //     print("Done!");
+        //         // }
+        //         coord = form0CurvePoints[i].points[j];
+        //         coord.x = 1*f1[j].x + timeFraction*(f2[j].x-f1[j].x);
+        //         coord.y = 1*f1[j].y + timeFraction*(f2[j].y-f1[j].y);
+        //         coord.z = 1*f1[j].z + timeFraction*(f2[j].z-f1[j].z);
+        //         // if(i == 0 & j == 0){
+        //         //     print(`${b[j].z-a[j].z}`);
+        //         // }
+                
+        //         spheres[sphereIndex].position.x = coord.x;
+        //         spheres[sphereIndex].position.y = coord.y;
+        //         spheres[sphereIndex].position.z = coord.z;
+
+        //     }
+        // }
 
         //TODO: set sphere positions based on interpolations
 
