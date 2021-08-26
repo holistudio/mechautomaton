@@ -1,4 +1,8 @@
 # mechatomaton
  threejs dynamic sculpture experiment
 
-- [x] Checklist test
+- [ ] Timing
+- [ ] Compare animation with Grasshopper
+- [ ] Normal Vector Check
+- [ ] Shadows Check
+- [ ] Load CSV without p5js
