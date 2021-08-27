@@ -7,8 +7,8 @@ let form1CurvePoints;
 let f2;
 let formCurvePoints;
 
-let timeFraction=0;
-
+let timeFraction;
+let startTime = 0;
 let printOnce = true;
 let p = 0;
 
@@ -476,15 +476,31 @@ function main() {
     
     //RENDER LOOP
     const animationLoopTime = 5;
-
+    let reverse = false;
+    
     function render(time) {
         // const time = Date.now() * 0.001;
         time = time * 0.001;
-        timeFraction = 0;
-        timeFraction = time/animationLoopTime;
-        if(timeFraction > 1){
-            timeFraction = 1;
+
+        // console.log(time-startTime)
+        if((time-startTime) > animationLoopTime){
+            
+            reverse = !reverse;
+            startTime = time;
         }
+        delta = (time-startTime);
+
+        
+
+        if(reverse){
+            timeFraction = (animationLoopTime-delta)/animationLoopTime;
+        }
+        else{
+            timeFraction = delta/animationLoopTime;
+        }
+
+        
+
         // console.log(timeFraction)
 
         // check if renderer resolution needs to change based on canvas/window size
