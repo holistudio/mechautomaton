@@ -475,16 +475,16 @@ function main() {
     }
     
     //RENDER LOOP
-    const animationLoopTime = 5*72;
+    const animationLoopTime = 5;
 
     function render(time) {
         // const time = Date.now() * 0.001;
         time = time * 0.001;
         timeFraction = 0;
         timeFraction = time/animationLoopTime;
-        // if(timeFraction > 1){
-        //     timeFraction = 1;
-        // }
+        if(timeFraction > 1){
+            timeFraction = 1;
+        }
         // console.log(timeFraction)
 
         // check if renderer resolution needs to change based on canvas/window size
@@ -629,7 +629,7 @@ function setup(){
     // console.log(form0CurvePoints);
     form1CurvePoints = loadPoints(form1);
     // console.log(form1CurvePoints);
-    formCurvePoints = form0CurvePoints;
+    formCurvePoints = JSON.parse(JSON.stringify(form0CurvePoints));
 
     main();
 }
