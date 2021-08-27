@@ -1,7 +1,7 @@
 # mechatomaton
  threejs dynamic sculpture experiment
 
-- [ ] Timing
+- [x] Timing
 - [ ] Compare animation with Grasshopper
 - [ ] Normal Vector Check
 - [ ] Shadows Check
