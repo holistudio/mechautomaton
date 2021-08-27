@@ -23,47 +23,14 @@ const animationLoopTime = 5;
 let camera, scene, renderer;
 
 
-//TODO: Consider reading csv files using the code below instead
-// TODO: see if this prevents timing issues, as p5 may have cause threejs loops to run faster?
 
-// var obj_csv = {
-//     size:0,
-//     dataFile:[]
-// };
- 
-// function readImage(input) {
-//     console.log(input)
-//  if (input.files && input.files[0]) {
-//  let reader = new FileReader();
-//         reader.readAsBinaryString(input.files[0]);
-//  reader.onload = function (e) {
-//  console.log(e);
-//  obj_csv.size = e.total;
-//  obj_csv.dataFile = e.target.result
-//             console.log(obj_csv.dataFile)
-//             parseData(obj_csv.dataFile)
-            
-//  }
-//  }
-// }
- 
-// function parseData(data){
-//     let csvData = [];
-//     let lbreak = data.split("\n");
-//     lbreak.forEach(res => {
-//         csvData.push(res.split(","));
-//     });
-//     console.table(csvData);
-// }
 function loadPoints(table){
     let formPoints =  [];
-    // let curve = {id:0,points:[]};
-    // let curvePoint = {x:0,y:0,z:0};
+
     let curveKey = -1;
     let xCoord = -1;
 
     //store table/CSV to 2D array or something
-    // console.log(table.getRowCount());
     //each row
     for(let i = 0; i<table.getRowCount();i++){
         let row = table.getRow(i);
@@ -76,7 +43,6 @@ function loadPoints(table){
             let curve = {id:curveKey,points:[]};
             xCoord = row.get(0);
             formPoints.push(curve);
-            // console.log(formPoints[curveKey]);
         }
 
         //append latest point to formPoints at the latest curveKey
@@ -113,14 +79,8 @@ function init() {
     const near = 1;
     const far = 10000;
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    // camera.position.x = 3282;
-    // camera.position.y = 2530;
-    // camera.position.z = 1125;
     camera.position.set(3808, 2007, 548);
     camera.lookAt(1053,-2,-660);
-    
-    // camera.position.set(3808, 2007, -1048);
-    // camera.lookAt(0,-2,-660);
 
     //SCENE
     scene = new THREE.Scene();
@@ -141,14 +101,12 @@ function init() {
         light.shadow.camera.far = 10000; // default
 
         const helper = new THREE.DirectionalLightHelper( light, 5 );
-        // scene.add( helper );
 
         const pointLight = new THREE.PointLight(color, intensity, 0 );
         
         pointLight.position.set( 1500, 1000, -3000 );
         const pointLightHelper = new THREE.PointLightHelper( pointLight, 5 );
         scene.add( pointLight );
-        // scene.add( pointLightHelper );
     }
     
     //POINTS
@@ -316,39 +274,6 @@ function init() {
         normals.push(crossAB.x, crossAB.y, crossAB.z);
     }
 
-    
-    // TODO: Maybe the entire mesh can be one BufferGeometry...and you'll interpolate accordingly...somehow
-    // Reference: https://github.com/mrdoob/three.js/blob/master/examples/webgl_buffergeometry_indexed.html
-    // See how it pushes vertices and normals to a single array before creating the geometry.
-    // Maybe this is slower for interpolation, since you'll need to recalculate all vertices and then reinstantiate an entire geometry for the animation...
-
-    // const pos = {x:0,y:0,z:0};
-    // makeSphere(pos);
-    
-    // const radius = 7;
-    // const widthSegments = 12;
-    // const heightSegments = 8;
-    // const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
-    // const color = 0x49ef4;
-    // const material2 = new THREE.MeshPhongMaterial({color});
-    // console.log('purple?')
-    // const ball = new THREE.Mesh(geometry, material2);
-    // scene.add(ball);
-
-    
-    //for each point in formPoints create a sphere
-    // const spheres = [];
-    // // console.log(form0CurvePoints[0]);
-    // form0CurvePoints.forEach(function(curve, index, array) {
-        
-    //     curve.points.forEach(function(coord, index, array) {
-    //         // console.log(coord);
-    //         spheres.push(makeSphere(coord));
-    //         // makeSphere(coord);
-    //     });
-    // });
-
-    // const surfaces = [];
     for (let i = 0; i < formCurvePoints.length-1; i++) {
         const curve0 = formCurvePoints[i];
         const curve1 = formCurvePoints[i+1];
@@ -367,10 +292,6 @@ function init() {
                 p3 = curve1.points[j+1];
                 p4 = curve0.points[j+1];
             }
-            
-            // console.log(p1);
-            // makeFace(p1,p3,p2);
-            // makeFace(p3,p1,p4);
             makeQuad(p1,p2,p3,p4);
         }
         
@@ -493,7 +414,6 @@ function render() {
     }
 
     const time = (Date.now() - startTime) * 0.001;
-    // time = time * 0.001;
 
     timeFraction = time/animationLoopTime;
 
@@ -510,40 +430,13 @@ function render() {
     formCurvePoints.forEach(function(curve, j, array) {
         let f1 = form0CurvePoints[j].points;
         let f2 = form1CurvePoints[j].points;
-        // if(printOnce)
-        // {
-        //     console.log(f2);
-            
-        //     p++;
-        //     if(p>2)
-        //     {
-        //         printOnce = false;
-        //     }
-        // }
         
         //update curve points interpolating between form0 and form1
         curve.points.forEach(function(coord, k, array) {
             sphereIndex = f1.length * j + k;
-            // console.log(timeFraction);
-            // if(timeFraction>=1){
-            //     print("Done!");
-            // }
             coord.x = 1*f1[k].x + timeFraction*(f2[k].x-f1[k].x);
             coord.y = 1*f1[k].y + timeFraction*(f2[k].y-f1[k].y);
             coord.z = 1*f1[k].z + timeFraction*(f2[k].z-f1[k].z);
-            // if(i == 0 & j == 0){
-            //     print(`${b[j].z-a[j].z}`);
-            // }
-            // if(printOnce){
-            //     if(coord.z >= f2[k].z){
-            //         // print(time);
-            //         printOnce = false;
-            //     }
-            // }
-            
-            // spheres[sphereIndex].position.x = coord.x;
-            // spheres[sphereIndex].position.y = coord.y;
-            // spheres[sphereIndex].position.z = coord.z;
         });
 
     });
@@ -552,20 +445,8 @@ function render() {
     for (let i = 0; i < formCurvePoints.length-1; i++) {
         const curve0 = formCurvePoints[i];
         const curve1 = formCurvePoints[i+1];
-        // let curve0, curve1;
-        // if(i==formCurvePoints.length-1){
-        //     curve0 = formCurvePoints[i];
-        //     curve1 = formCurvePoints[0];
-        // }
-        // else{
-        //     curve0 = formCurvePoints[i];
-        //     curve1 = formCurvePoints[i+1];
-        // }
+
         for (let j = 0; j < curve0.points.length; j++) {
-            // const p1 = curve0.points[j];
-            // const p2 = curve1.points[j];
-            // const p3 = curve1.points[j+1];
-            // const p4 = curve0.points[j+1];
             let p1,p2,p3,p4;
             if(j==curve0.points.length-1){
                 p1 = curve0.points[j];
@@ -579,11 +460,6 @@ function render() {
                 p3 = curve1.points[j+1];
                 p4 = curve0.points[j+1];
             }
-            // console.log(p1);
-            // updateFace(geoIndex,p1,p3,p2);
-            // geoIndex = geoIndex + 3;
-            // updateFace(geoIndex,p3,p1,p4);
-            // geoIndex = geoIndex + 3;
 
             updateQuad(geoIndex,p1,p2,p3,p4);
             geoIndex = geoIndex + 6;
@@ -593,35 +469,6 @@ function render() {
     geometry.attributes.position.needsUpdate = true;
     geometry.attributes.normal.needsUpdate = true;
 
-
-    // for(let i = 0; i<formCurvePoints.length; i++){
-    //     let f1 = form0CurvePoints[i].points;
-
-    //     let f2 = form1CurvePoints[i].points;
-    //     for(let j = 0; j<f1.length; j++){
-    //         sphereIndex = f1.length * i + j;
-    //         // console.log(timeFraction);
-    //         // if(timeFraction>=1){
-    //         //     print("Done!");
-    //         // }
-    //         coord = form0CurvePoints[i].points[j];
-    //         coord.x = 1*f1[j].x + timeFraction*(f2[j].x-f1[j].x);
-    //         coord.y = 1*f1[j].y + timeFraction*(f2[j].y-f1[j].y);
-    //         coord.z = 1*f1[j].z + timeFraction*(f2[j].z-f1[j].z);
-    //         // if(i == 0 & j == 0){
-    //         //     print(`${b[j].z-a[j].z}`);
-    //         // }
-            
-    //         spheres[sphereIndex].position.x = coord.x;
-    //         spheres[sphereIndex].position.y = coord.y;
-    //         spheres[sphereIndex].position.z = coord.z;
-
-    //     }
-    // }
-
-    //TODO: set sphere positions based on interpolations
-
-
     renderer.render(scene, camera);
     
 }
@@ -629,9 +476,7 @@ function render() {
 
 function setup(){
     form0CurvePoints = loadPoints(form0);
-    // console.log(form0CurvePoints);
     form1CurvePoints = loadPoints(form1);
-    // console.log(form1CurvePoints);
     formCurvePoints = form0CurvePoints;
 
     init();
