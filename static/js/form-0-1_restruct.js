@@ -2,9 +2,7 @@ let form0;
 let form1;
 
 let form0CurvePoints;
-let f1;
 let form1CurvePoints;
-let f2;
 let formCurvePoints;
 
 let timeFraction=0;
@@ -110,137 +108,10 @@ function init() {
     }
     
     //POINTS
-    function makeSphere(position) {
-        const radius = 4;
-        const widthSegments = 12;
-        const heightSegments = 8;
-        const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
-        const color = 0x49ef4;
-        const material = new THREE.MeshPhongMaterial({color});
-
-        const sphere = new THREE.Mesh(geometry, material);
-        scene.add(sphere);
-
-        sphere.position.x = position.x;
-        sphere.position.y = position.y;
-        sphere.position.z = position.z;
-
-        return sphere;
-    }
 
     //SURFACES
     geometry = new THREE.BufferGeometry();
     const meshMaterial = new THREE.MeshLambertMaterial( {color: 0x32fcdb, side: THREE.DoubleSide} );
-
-    function makePlane(p1,p2,p3,p4) {
-        // const color = 0x42f5a1;
-        const geometry = new THREE.BufferGeometry();
-        // create a simple square shape. We duplicate the top left and bottom right
-        // vertices because each vertex needs to appear once per triangle.
-        const vertices = new Float32Array( [
-            p1.x, p1.y, p1.z,
-            p3.x, p3.y, p3.z,
-            p2.x, p2.y, p2.z,
-
-            p3.x, p3.y, p3.z,
-            p1.x, p1.y, p1.z,
-            p4.x, p4.y, p4.z,
-        ] );
-
-        // TODO: Calculate normal vectors for each triangle vertex
-        // A = [a1, a2, a3] and B = [b1, b2, b3] 
-        // cross(A,B) = [ a2 * b3 - a3 * b2, a3 * b1 - a1 * b3, a1 * b2 - a2 * b1 ]
-        // const normals = new Float32Array( [
-        //     p1.x, p1.y, p1.z,
-        // ] );
-        // itemSize = 3 because there are 3 values (components) per vertex
-        geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-
-        // geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        
-        const material = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-        // const material = new THREE.MeshNormalMaterial();
-        const mesh = new THREE.Mesh( geometry, material );
-        scene.add(mesh);
-
-        return mesh;
-    }
-
-    function makeFace(p1,p2,p3) {
-        // const color = 0x42f5a1;
-        // create a simple square shape. We duplicate the top left and bottom right
-        // vertices because each vertex needs to appear once per triangle.
-        vertices.push(p1.x, p1.y, p1.z);
-        vertices.push(p2.x, p2.y, p2.z);
-        vertices.push(p3.x, p3.y, p3.z);
-
-        // TODO: Calculate normal vectors for each triangle vertex
-        // A = [a1, a2, a3] and B = [b1, b2, b3] 
-        const a1 = p3.x - p2.x;
-        const a2 = p3.y - p2.y;
-        const a3 = p3.z - p2.z;
-
-        const b1 = p1.x - p2.x;
-        const b2 = p1.y - p2.y;
-        const b3 = p1.z - p2.z;
-
-        // cross(A,B) = [ a2 * b3 - a3 * b2, a3 * b1 - a1 * b3, a1 * b2 - a2 * b1 ]
-        const crossAB = {x:a2 * b3 - a3 * b2, y:a3 * b1 - a1 * b3, z:a1 * b2 - a2 * b1};
-        
-        normals.push(crossAB.x, crossAB.y, crossAB.z);
-        normals.push(crossAB.x, crossAB.y, crossAB.z);
-        normals.push(crossAB.x, crossAB.y, crossAB.z);
-    }
-
-    function updateFace(i,p1,p2,p3) {
-        const position = geometry.attributes.position;
-        const dir = geometry.attributes.normal;
-        // const color = 0x42f5a1;
-        // create a simple square shape. We duplicate the top left and bottom right
-        // vertices because each vertex needs to appear once per triangle.
-        // vertices[i]=p1.x;
-        // vertices[i+1]=p1.y;
-        // vertices[i+2]=p1.z;
-        // vertices[i+3]=p2.x;
-        // vertices[i+4]=p2.y;
-        // vertices[i+5]=p2.z;
-        // vertices[i+6]=p3.x;
-        // vertices[i+7]=p3.y;
-        // vertices[i+8]=p3.z;
-
-        position.setX(i, p1.x);
-        position.setY(i, p1.y);
-        position.setZ(i, p1.z);
-        position.setX(i+1, p2.x);
-        position.setY(i+1, p2.y);
-        position.setZ(i+1, p2.z);
-        position.setX(i+2, p3.x);
-        position.setY(i+2, p3.y);
-        position.setZ(i+2, p3.z);
-
-        // TODO: Calculate normal vectors for each triangle vertex
-        // A = [a1, a2, a3] and B = [b1, b2, b3] 
-        const a1 = p3.x - p2.x;
-        const a2 = p3.y - p2.y;
-        const a3 = p3.z - p2.z;
-
-        const b1 = p1.x - p2.x;
-        const b2 = p1.y - p2.y;
-        const b3 = p1.z - p2.z;
-
-        // cross(A,B) = [ a2 * b3 - a3 * b2, a3 * b1 - a1 * b3, a1 * b2 - a2 * b1 ]
-        const crossAB = {x:a2 * b3 - a3 * b2, y:a3 * b1 - a1 * b3, z:a1 * b2 - a2 * b1};
-
-        dir.setX(i, crossAB.x);
-        dir.setY(i, crossAB.y);
-        dir.setZ(i, crossAB.z);
-        dir.setX(i+1, crossAB.x);
-        dir.setY(i+1, crossAB.y);
-        dir.setZ(i+1, crossAB.z);
-        dir.setX(i+2, crossAB.x);
-        dir.setY(i+2, crossAB.y);
-        dir.setZ(i+2, crossAB.z);
-    }
 
     function makeQuad(p1,p2,p3,p4) {
         // const color = 0x42f5a1;
@@ -338,18 +209,6 @@ function render() {
     function updateQuad(i,p1,p2,p3,p4) {
         const position = geometry.attributes.position;
         const dir = geometry.attributes.normal;
-        // const color = 0x42f5a1;
-        // create a simple square shape. We duplicate the top left and bottom right
-        // vertices because each vertex needs to appear once per triangle.
-        // vertices[i]=p1.x;
-        // vertices[i+1]=p1.y;
-        // vertices[i+2]=p1.z;
-        // vertices[i+3]=p2.x;
-        // vertices[i+4]=p2.y;
-        // vertices[i+5]=p2.z;
-        // vertices[i+6]=p3.x;
-        // vertices[i+7]=p3.y;
-        // vertices[i+8]=p3.z;
 
         position.setX(i, p1.x);
         position.setY(i, p1.y);
@@ -375,7 +234,7 @@ function render() {
         position.setY(i+5, p4.y);
         position.setZ(i+5, p4.z);
 
-        // TODO: Calculate normal vectors for each triangle vertex
+        // Calculate normal vectors for each triangle vertex
         // A = [a1, a2, a3] and B = [b1, b2, b3] 
         const a1 = p2.x - p1.x;
         const a2 = p2.y - p1.y;
@@ -416,30 +275,39 @@ function render() {
     const time = (Date.now() - startTime) * 0.001;
 
     timeFraction = time/animationLoopTime;
+    // timeFraction = 0.25;
 
-    
+    // console.log(timeFraction);
     if(timeFraction > 1){
         startTime = Date.now();
-        console.log(time);
+        //console.log(time);
     }
-    // console.log(timeFraction)
-    
-    //TODO: interpolate between curves
-    
-    // console.log(timeFraction)
-    formCurvePoints.forEach(function(curve, j, array) {
-        let f1 = form0CurvePoints[j].points;
-        let f2 = form1CurvePoints[j].points;
-        
-        //update curve points interpolating between form0 and form1
-        curve.points.forEach(function(coord, k, array) {
-            sphereIndex = f1.length * j + k;
-            coord.x = 1*f1[k].x + timeFraction*(f2[k].x-f1[k].x);
-            coord.y = 1*f1[k].y + timeFraction*(f2[k].y-f1[k].y);
-            coord.z = 1*f1[k].z + timeFraction*(f2[k].z-f1[k].z);
-        });
 
-    });
+    for (let i = 0; i < formCurvePoints.length; i++) {
+        const f1 = form0CurvePoints[i].points;
+        const f2 = form1CurvePoints[i].points;
+        // console.log('here');
+        //update curve points interpolating between form0 and form1
+        for (let j = 0; j < formCurvePoints[i].points.length; j++) {
+            // console.log('here');
+            const coord = formCurvePoints[i].points[j];
+            // console.log(timeFraction);
+            
+            if(i==0 && j==2){
+                // console.log(f1[j].y);
+            }
+
+
+            coord.x = f1[j].x + timeFraction*(f2[j].x-f1[j].x);
+            coord.y = f1[j].y + timeFraction*(f2[j].y-f1[j].y);
+            coord.z = f1[j].z + timeFraction*(f2[j].z-f1[j].z);
+            
+            // coord.x = f2[j].x;
+            // coord.y = f2[j].y;
+            // coord.z = f2[j].z;
+        }
+        
+    }
 
     let geoIndex=0;
     for (let i = 0; i < formCurvePoints.length-1; i++) {
@@ -477,7 +345,12 @@ function render() {
 function setup(){
     form0CurvePoints = loadPoints(form0);
     form1CurvePoints = loadPoints(form1);
-    formCurvePoints = form0CurvePoints;
+    formCurvePoints = JSON.parse(JSON.stringify(form0CurvePoints));
+    console.log(form0CurvePoints);
+    // console.log(form1CurvePoints);
+    console.log(formCurvePoints);
+
+    
 
     init();
     animate();
