@@ -2,8 +2,11 @@
  threejs dynamic sculpture experiment
 
 - [x] Timing
-- [ ] Compare animation with Grasshopper
-- [ ] Normal Vector Check
+  - animation ran faster than expected because formCurvePoints was set to point to form0CurvePoints instead of deep copying form0CurvePoints.
+- [x] Compare animation with Grasshopper
+  - looks the same as Grasshopper
+- [x] Normal Vector Check
+  - the issue isn't the normal vectors. the curves are just too far apart for it to look nice.
 - [ ] Shadows Check
 - [ ] Mouse rotation system
 - [ ] Load CSV without p5js
