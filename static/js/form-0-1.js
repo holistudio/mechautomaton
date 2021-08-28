@@ -109,14 +109,15 @@ function main() {
     const near = 1;
     const far = 10000;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    // camera.position.x = 3282;
-    // camera.position.y = 2530;
-    // camera.position.z = 1125;
+    
     camera.position.set(3808, 2007, 548);
     camera.lookAt(1053,-2,-660);
     
     // camera.position.set(3808, 2007, -1048);
     // camera.lookAt(0,-2,-660);
+
+    // camera.position.set(-1023, 2804, -2669);
+    // camera.lookAt(939, 237, -643);
 
     //SCENE
     const scene = new THREE.Scene();
