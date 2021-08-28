@@ -119,6 +119,9 @@ function main() {
     // camera.position.set(-1023, 2804, -2669);
     // camera.lookAt(939, 237, -643);
 
+    camera.position.set(4429,1502,-1299);
+    camera.lookAt(1668,319,-574);
+
     //SCENE
     const scene = new THREE.Scene();
 
