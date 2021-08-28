@@ -110,7 +110,7 @@ function main() {
     const far = 10000;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     
-    camera.position.set(3808, 2007, 548);
+    camera.position.set(3808, 3007, 548);
     camera.lookAt(1053,-2,-660);
     
     // camera.position.set(3808, 2007, -1048);
@@ -119,8 +119,15 @@ function main() {
     // camera.position.set(-1023, 2804, -2669);
     // camera.lookAt(939, 237, -643);
 
-    camera.position.set(4429,1502,-1299);
-    camera.lookAt(1668,319,-574);
+    // camera.position.set(4429,1502,-1299);
+    // camera.lookAt(1668,319,-574);
+
+    // camera.position.set(3540,1213,-1095);
+    // camera.lookAt(1368,407,396);
+
+    // camera.position.set(-257,161,-266);
+    // camera.lookAt(1380,273,-317);
+    
 
     //SCENE
     const scene = new THREE.Scene();
@@ -131,24 +138,24 @@ function main() {
         const intensity = 1;
         const light = new THREE.DirectionalLight(color, intensity);
         
-        light.position.set(1000,1000,1000);
-        light.castShadow = true;
+        light.position.set(-1000,1000,1000);
+        // light.castShadow = true;
         scene.add(light);
 
-        light.shadow.mapSize.width = 1024; // default
-        light.shadow.mapSize.height = 1024; // default
-        light.shadow.camera.near = 1; // default
-        light.shadow.camera.far = 10000; // default
+        // light.shadow.mapSize.width = 1024; // default
+        // light.shadow.mapSize.height = 1024; // default
+        // light.shadow.camera.near = 1; // default
+        // light.shadow.camera.far = 10000; // default
 
         const helper = new THREE.DirectionalLightHelper( light, 5 );
         // scene.add( helper );
 
-        const pointLight = new THREE.PointLight(color, intensity, 0 );
+        const pointLight = new THREE.PointLight(color, 0.5, 0 );
         
         pointLight.position.set( 1500, 1000, -3000 );
         const pointLightHelper = new THREE.PointLightHelper( pointLight, 5 );
         scene.add( pointLight );
-        // scene.add( pointLightHelper );
+        scene.add( pointLightHelper );
     }
     
     //POINTS
@@ -459,8 +466,8 @@ function main() {
     
     // const material = new THREE.MeshNormalMaterial();
     mesh = new THREE.Mesh( geometry, meshMaterial );
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    // mesh.castShadow = true;
+    // mesh.receiveShadow = true;
     scene.add(mesh);
 
 
