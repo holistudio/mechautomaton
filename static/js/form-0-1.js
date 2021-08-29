@@ -95,7 +95,8 @@ function main() {
     const renderer = new THREE.WebGLRenderer({canvas}); //sets renderer's DOM element
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-    renderer.setClearColor(0x8f8f8f);
+    // renderer.setClearColor(0x9da3aa);
+    renderer.setClearColor(0xFFFFFF);
     
     //TODO: Set camera to perspective matching Rhino
     //Lens length = 50 ...?
@@ -110,8 +111,8 @@ function main() {
     const far = 10000;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     
-    camera.position.set(3808, 3007, 548);
-    camera.lookAt(1053,-2,-660);
+    // camera.position.set(3808, 3007, 548);
+    // camera.lookAt(1053,-2,-660);
     
     // camera.position.set(3808, 2007, -1048);
     // camera.lookAt(0,-2,-660);
@@ -122,11 +123,14 @@ function main() {
     // camera.position.set(4429,1502,-1299);
     // camera.lookAt(1668,319,-574);
 
-    // camera.position.set(3540,1213,-1095);
-    // camera.lookAt(1368,407,396);
+    // camera.position.set(4167,1368,-1213);
+    // camera.lookAt(737,-73,370);
 
-    // camera.position.set(-257,161,-266);
-    // camera.lookAt(1380,273,-317);
+    // camera.position.set(3488,1423,-1228);
+    // camera.lookAt(1244,63,-512);
+
+    camera.position.set(879,294,-409);
+    camera.lookAt(1265,234,-525);
     
 
     //SCENE
@@ -150,7 +154,7 @@ function main() {
         const helper = new THREE.DirectionalLightHelper( light, 5 );
         // scene.add( helper );
 
-        const pointLight = new THREE.PointLight(color, 0.5, 0 );
+        const pointLight = new THREE.PointLight(0x0000FF, 0.5, 0 );
         
         pointLight.position.set( 1500, 1000, -3000 );
         const pointLightHelper = new THREE.PointLightHelper( pointLight, 5 );
